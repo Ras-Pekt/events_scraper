@@ -57,9 +57,7 @@ class DateConversionPipeline:
                 date_str = adapter.get(key)
                 adapter[key] = self.convert_to_datetime(date_str, spider)
         else:
-            spider.logger.error(
-                f"vannaDATECONVERSION -> UNKNOWN ITEM TYPE: {type(item)}"
-            )
+            spider.logger.error(f"DATECONVERSION -> UNKNOWN ITEM TYPE: {type(item)}")
 
         return item
 
