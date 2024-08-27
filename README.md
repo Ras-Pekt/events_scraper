@@ -22,15 +22,16 @@ To install the project, follow these steps:
 ### Installation Steps
 
 1. Clone the repository using Git:
+
    ```bash
    git clone https://github.com/<your-username>/event_scraper.git
    ```
 
-````
 2. Navigate to the project directory:
+
    ```bash
-cd event_scraper
-````
+   cd event_scraper
+   ```
 
 3. Install the required dependencies using pip:
 
@@ -44,30 +45,30 @@ cd event_scraper
    export MYSQL_PWD="<password>"
    ```
 
-````
-
 ## Usage
------
+
+---
 
 To run the scraper, use the following command:
-   ```bash
+
+```bash
 scrapy crawl eventscraper
-````
+```
 
 This will start the scraper and begin extracting event data from the target website.
 
 ### Usage Examples
 
 - To scrape events from a specific event type (e.g., webcasts, summits, or series), use the following command:
+
   ```bash
   scrapy crawl eventscraper -a event_type=webcasts
   ```
 
-````
-* To scrape events from multiple event types, use the following command:
-   ```bash
-scrapy crawl eventscraper -a event_type=webcasts,summits
-````
+- To scrape events from multiple event types, use the following command:
+  ```bash
+  scrapy crawl eventscraper -a event_type=webcasts,summits
+  ```
 
 ## Contribution
 
