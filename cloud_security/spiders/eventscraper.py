@@ -10,7 +10,8 @@ class EventscraperSpider(Spider):
     Attributes:
         name (str): The name of the spider
         allowed_domains (list): A list of domains allowed to be scraped
-        start (int): The start value to paginate through the BrightTALK API
+        webcast_start (int): The starting index for webcasts
+        ss_start (int): The starting index for summits and series
         scraped_webcasts (bool): A flag to track if webcasts have been scraped
         scraped_summits_and_series (bool): A flag to track if summits and series have been scraped
 
@@ -27,7 +28,7 @@ class EventscraperSpider(Spider):
     def __init__(self, *args, **kwargs):
         """
         Initialize the spider with a start value and flags to track scraping progress.
-        The start value is used to paginate through the BrightTALK API.
+        The start values are used to paginate through the BrightTALK API.
         The flags are used to stop the spider when there's no more data to scrape.
 
         args:
@@ -37,7 +38,8 @@ class EventscraperSpider(Spider):
         """
 
         super().__init__(*args, **kwargs)
-        self.start = 0
+        self.webcast_start = 0
+        self.ss_start = 0
         self.scraped_webcasts = False
         self.scraped_summits_and_series = False
 
@@ -53,23 +55,24 @@ class EventscraperSpider(Spider):
         """
 
         while True:
-            start = self.start * 24
+            webcast_start = self.webcast_start * 8
+            ss_start = self.ss_start * 6
 
             urls = [
                 (
-                    f"https://www.brighttalk.com/api/webcasts?start={start}&size=8&rank=-webcast_relevance&bq=%28and+type%3A%27webcast%27+status%3A%27recorded%27+%27Cloud+Security%27%29&rankClosest=&paidSearch=true&returnFields=&q=",
+                    f"https://www.brighttalk.com/api/webcasts?start={webcast_start}&size=8&rank=-webcast_relevance&bq=%28and+type%3A%27webcast%27+status%3A%27recorded%27+%27Cloud+Security%27%29&rankClosest=&paidSearch=true&returnFields=&q=",
                     "webcast",
                 ),
                 (
-                    f"https://www.brighttalk.com/api/webcasts?start={start}&size=8&rank=webcast_relevance&bq=%28and+type%3A%27webcast%27+status%3A%27upcoming%27+%27Cloud+Security%27%29&rankClosest=&paidSearch=true&returnFields=&q=",
+                    f"https://www.brighttalk.com/api/webcasts?start={webcast_start}&size=8&rank=webcast_relevance&bq=%28and+type%3A%27webcast%27+status%3A%27upcoming%27+%27Cloud+Security%27%29&rankClosest=&paidSearch=true&returnFields=&q=",
                     "webcast",
                 ),
                 (
-                    f"https://www.brighttalk.com/api/summits?start={start}&size=6&rank=-custom_relevance%2Cdatetime&bq=%28and+type%3A%27summit%27+%27Cloud+Security%27%29&rankClosest=",
+                    f"https://www.brighttalk.com/api/summits?start={ss_start}&size=6&rank=-custom_relevance%2Cdatetime&bq=%28and+type%3A%27summit%27+%27Cloud+Security%27%29&rankClosest=",
                     "summit",
                 ),
                 (
-                    f"https://www.brighttalk.com/api/series?start={start}&size=6&rank=-custom_relevance%2Cdatetime&bq=%28and+type%3A%27series%27+%27Cloud+Security%27%29&rankClosest=",
+                    f"https://www.brighttalk.com/api/series?start={ss_start}&size=6&rank=-custom_relevance%2Cdatetime&bq=%28and+type%3A%27series%27+%27Cloud+Security%27%29&rankClosest=",
                     "series",
                 ),
             ]
@@ -77,7 +80,8 @@ class EventscraperSpider(Spider):
             for url, event_type in urls:
                 yield Request(url, self.parse, cb_kwargs={"event_type": event_type})
 
-            self.start += 1
+            self.webcast_start += 1
+            self.ss_start += 1
 
     def parse(self, response, event_type):
         """
