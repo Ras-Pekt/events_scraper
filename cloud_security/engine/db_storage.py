@@ -1,14 +1,38 @@
-from cloud_security.engine import Base
 from os import getenv
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from cloud_security.engine import Base
+
 
 class DBStorage:
+    """
+    A class to store items in a MySQL database.
+
+    Attributes:
+        __engine (Engine): A SQLAlchemy engine to connect to the database
+        __session (Session): A SQLAlchemy session to interact with the database
+
+    Methods:
+        __init__: Initialize the database connection
+        add_item: Add an item to the database
+        close: Close the database connection
+    """
+
     __engine = None
     __session = None
 
     def __init__(self):
+        """
+        Initialize the database connection.
+
+        args:
+            None
+        returns:
+            None
+        """
+
         MYSQL_USER = getenv("MYSQL_USER")
         MYSQL_PWD = getenv("MYSQL_PWD")
         MYSQL_HOST = "localhost"
@@ -23,8 +47,28 @@ class DBStorage:
         self.__session = Session()
 
     def add_item(self, item):
-        self.__session.add(item)
-        self.__session.commit()
+        """
+        Add an item to the database.
+
+        args:
+            item (object): An item to add to the database
+        returns:
+            None
+        """
+
+        if self.__session:
+            self.__session.add(item)
+            self.__session.commit()
 
     def close(self):
-        self.__session.close()
+        """
+        Close the database connection.
+
+        args:
+            None
+        returns:
+            None
+        """
+
+        if self.__session:
+            self.__session.close()

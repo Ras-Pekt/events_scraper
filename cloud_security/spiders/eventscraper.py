@@ -83,7 +83,7 @@ class EventscraperSpider(Spider):
             self.webcast_start += 1
             self.ss_start += 1
 
-    def parse(self, response, event_type):
+    def parse(self, response, **cb_kwargs):
         """
         Parse the JSON response from the BrightTALK API.
         The response contains webcasts, summits, or series.
@@ -96,6 +96,8 @@ class EventscraperSpider(Spider):
         """
 
         data = response.json()
+
+        event_type = cb_kwargs.get('event_type')
 
         if event_type == "webcast":
             webcasts = data.get("communications", [])
